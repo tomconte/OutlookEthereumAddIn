@@ -34,6 +34,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Microsoft.Office.Tools.Ribbon.RibbonDialogLauncher ribbonDialogLauncherImpl1 = this.Factory.CreateRibbonDialogLauncher();
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
             this.checkBox1 = this.Factory.CreateRibbonCheckBox();
@@ -52,20 +53,25 @@
             // 
             // group1
             // 
+            ribbonDialogLauncherImpl1.ScreenTip = "Blockchain Settings";
+            ribbonDialogLauncherImpl1.SuperTip = "Show the Blockchain Settings dialog box so you can change the Ethereum server add" +
+    "ress, account and password.";
+            this.group1.DialogLauncher = ribbonDialogLauncherImpl1;
             this.group1.Items.Add(this.checkBox1);
             this.group1.Items.Add(this.checkBox2);
             this.group1.Label = "Blockchain";
             this.group1.Name = "group1";
+            this.group1.DialogLauncherClick += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.group1_DialogLauncherClick);
             // 
             // checkBox1
             // 
-            this.checkBox1.Label = "stamp on send";
+            this.checkBox1.Label = "Stamp Message on Send";
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox1_Click);
             // 
             // checkBox2
             // 
-            this.checkBox2.Label = "notify";
+            this.checkBox2.Label = "Notify Recipients";
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.checkBox2_Click);
             // 

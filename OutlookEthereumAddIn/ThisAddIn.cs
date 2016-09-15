@@ -16,14 +16,18 @@ namespace OutlookEthereumAddIn
     {
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            var inspectors = this.Application.Inspectors;
-            //inspectors.NewInspector += Inspectors_NewInspector;
+            // Catch Item Send event
             this.Application.ItemSend += Application_ItemSend;
         }
 
         private void Application_ItemSend(object Item, ref bool Cancel)
         {
             var item = Item as Outlook.MailItem;
+
+            // Retrieve Settings
+            var host = Properties.Settings.Default.Host;
+            var account = Properties.Settings.Default.Account;
+            var password = Properties.Settings.Default.Password;
 
             // Get the item properties (that were set by the ribbon check boxes)
             var isBlockchain = item.UserProperties == null || item.UserProperties["BlockchainStamp"] == null ? false : item.UserProperties["BlockchainStamp"].Value;
@@ -63,14 +67,12 @@ namespace OutlookEthereumAddIn
                 var recipients = recipientsstring.ToString();
 
                 // Blockchain hash
-                var web3 = new Nethereum.Web3.Web3("http://cryptohash.tech:8545/");
-                //var account = "0x87b3f6def4d451c41be733b8924da66dea0caed4"; // WARN: Hard-coded dev account
-                var account = "0xca927db4582643f6ff2cf9606815eb5896ea361c";
+                var web3 = new Nethereum.Web3.Web3(host);
 
                 // Unlock account
                 // Need to expose the personal API:
                 // start geth --datadir Ethereum-Private --networkid 42 --nodiscover --rpc --rpcapi eth,web3,personal --rpccorsdomain "*" console
-                web3.Personal.UnlockAccount.SendRequestAsync(account, "Pass123!", new HexBigInteger(120)).Wait();
+                web3.Personal.UnlockAccount.SendRequestAsync(account, password, new HexBigInteger(120)).Wait();
 
                 // Send transaction
                 var abi = @"[{ ""constant"":false,""inputs"":[{""name"":""hash"",""type"":""uint256""},{""name"":""path"",""type"":""string""},{""name"":""computer"",""type"":""string""}],""name"":""fossilizeDocument"",""outputs"":[],""type"":""function""},{""constant"":true,""inputs"":[{""name"":"""",""type"":""uint256""}],""name"":""emails"",""outputs"":[{""name"":""sender"",""type"":""address""},{""name"":""subject"",""type"":""string""},{""name"":""emailFrom"",""type"":""string""},{""name"":""emailTo"",""type"":""string""}],""type"":""function""},{""constant"":false,""inputs"":[{""name"":""hash"",""type"":""uint256""},{""name"":""subject"",""type"":""string""},{""name"":""emailFrom"",""type"":""string""},{""name"":""emailTo"",""type"":""string""}],""name"":""fossilizeEmail"",""outputs"":[],""type"":""function""},{""constant"":true,""inputs"":[{""name"":"""",""type"":""uint256""}],""name"":""documents"",""outputs"":[{""name"":""sender"",""type"":""address""},{""name"":""path"",""type"":""string""},{""name"":""computer"",""type"":""string""}],""type"":""function""},{""anonymous"":false,""inputs"":[{""indexed"":false,""name"":""timestamp"",""type"":""uint256""},{""indexed"":true,""name"":""sender"",""type"":""address""},{""indexed"":false,""name"":""path"",""type"":""string""},{""indexed"":false,""name"":""computer"",""type"":""string""}],""name"":""DocumentFossilized"",""type"":""event""},{""anonymous"":false,""inputs"":[{""indexed"":false,""name"":""timestamp"",""type"":""uint256""},{""indexed"":true,""name"":""sender"",""type"":""address""},{""indexed"":false,""name"":""subject"",""type"":""string""},{""indexed"":false,""name"":""emailFrom"",""type"":""string""},{""indexed"":false,""name"":""emailTo"",""type"":""string""}],""name"":""EmailFossilized"",""type"":""event""}]";
@@ -98,6 +100,8 @@ namespace OutlookEthereumAddIn
                         if (r.Index < itemRecipients.Count - 1)
                             notifyTo.Append(";");
                     }
+                    // Set recipients
+                    newItem.To = notifyTo.ToString();
                 } else {
                     newItem.To = sender;
                 }
