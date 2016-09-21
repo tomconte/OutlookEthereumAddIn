@@ -58,5 +58,17 @@ namespace OutlookEthereumAddIn.Properties {
                 this["Password"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Contract {
+            get {
+                return ((string)(this["Contract"]));
+            }
+            set {
+                this["Contract"] = value;
+            }
+        }
     }
 }

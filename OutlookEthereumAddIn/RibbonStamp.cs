@@ -19,12 +19,14 @@ namespace OutlookEthereumAddIn
             // Check Settings and insert some default values if null (first run) then show the Settings dialog.
             if (String.IsNullOrEmpty(Properties.Settings.Default.Host)
                 || String.IsNullOrEmpty(Properties.Settings.Default.Account)
-                || String.IsNullOrEmpty(Properties.Settings.Default.Password))
+                || String.IsNullOrEmpty(Properties.Settings.Default.Password)
+                || String.IsNullOrEmpty(Properties.Settings.Default.Contract))
             {
                 Properties.Settings.Default.Host = "http://localhost:8545";
                 Properties.Settings.Default.Account = "0x1234";
                 Properties.Settings.Default.Password = "";
-                
+                Properties.Settings.Default.Contract = "0xabcd";
+
                 // Show settings
                 SettingsDialog settingsDialog = new SettingsDialog();
                 settingsDialog.Show();

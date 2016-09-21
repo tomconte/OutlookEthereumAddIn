@@ -29,6 +29,7 @@ namespace OutlookEthereumAddIn
             var host = Properties.Settings.Default.Host;
             var account = Properties.Settings.Default.Account;
             var password = Properties.Settings.Default.Password;
+            var contractAddress = Properties.Settings.Default.Contract;
 
             // Get the item properties (that were set by the ribbon check boxes)
             var isBlockchain = item.UserProperties == null || item.UserProperties["BlockchainStamp"] == null ? false : item.UserProperties["BlockchainStamp"].Value;
@@ -85,8 +86,7 @@ namespace OutlookEthereumAddIn
 
                 // Send transaction
                 var abi = @"[{ ""constant"":false,""inputs"":[{""name"":""hash"",""type"":""uint256""},{""name"":""path"",""type"":""string""},{""name"":""computer"",""type"":""string""}],""name"":""fossilizeDocument"",""outputs"":[],""type"":""function""},{""constant"":true,""inputs"":[{""name"":"""",""type"":""uint256""}],""name"":""emails"",""outputs"":[{""name"":""sender"",""type"":""address""},{""name"":""subject"",""type"":""string""},{""name"":""emailFrom"",""type"":""string""},{""name"":""emailTo"",""type"":""string""}],""type"":""function""},{""constant"":false,""inputs"":[{""name"":""hash"",""type"":""uint256""},{""name"":""subject"",""type"":""string""},{""name"":""emailFrom"",""type"":""string""},{""name"":""emailTo"",""type"":""string""}],""name"":""fossilizeEmail"",""outputs"":[],""type"":""function""},{""constant"":true,""inputs"":[{""name"":"""",""type"":""uint256""}],""name"":""documents"",""outputs"":[{""name"":""sender"",""type"":""address""},{""name"":""path"",""type"":""string""},{""name"":""computer"",""type"":""string""}],""type"":""function""},{""anonymous"":false,""inputs"":[{""indexed"":false,""name"":""timestamp"",""type"":""uint256""},{""indexed"":true,""name"":""sender"",""type"":""address""},{""indexed"":false,""name"":""path"",""type"":""string""},{""indexed"":false,""name"":""computer"",""type"":""string""}],""name"":""DocumentFossilized"",""type"":""event""},{""anonymous"":false,""inputs"":[{""indexed"":false,""name"":""timestamp"",""type"":""uint256""},{""indexed"":true,""name"":""sender"",""type"":""address""},{""indexed"":false,""name"":""subject"",""type"":""string""},{""indexed"":false,""name"":""emailFrom"",""type"":""string""},{""indexed"":false,""name"":""emailTo"",""type"":""string""}],""name"":""EmailFossilized"",""type"":""event""}]";
-                var address = "0x8bb0bfb8a3b7776a0646d96184f3355b1ee435f6";
-                var contract = web3.Eth.GetContract(abi, address);
+                var contract = web3.Eth.GetContract(abi, contractAddress);
                 var fossilizeFunc = contract.GetFunction("fossilizeEmail");
                 fossilizeFunc.SendTransactionAsync(account, new HexBigInteger(1000000), new HexBigInteger(0), hash, subject, sender, recipients).Wait();
 

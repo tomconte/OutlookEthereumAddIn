@@ -18,6 +18,7 @@ namespace OutlookEthereumAddIn
             this.textBox1.Text = Properties.Settings.Default.Host;
             this.textBox2.Text = Properties.Settings.Default.Account;
             this.textBox3.Text = Properties.Settings.Default.Password;
+            this.textBox4.Text = Properties.Settings.Default.Contract;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -25,6 +26,7 @@ namespace OutlookEthereumAddIn
             Properties.Settings.Default.Host = this.textBox1.Text;
             Properties.Settings.Default.Account = this.textBox2.Text;
             Properties.Settings.Default.Password = this.textBox3.Text;
+            Properties.Settings.Default.Contract = this.textBox4.Text;
             Properties.Settings.Default.Save();
 
             this.Close();
