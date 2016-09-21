@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Security.Cryptography;
 using System.IO;
 using Nethereum.Hex.HexTypes;
+using System.Windows.Forms;
 
 namespace OutlookEthereumAddIn
 {
@@ -72,7 +73,15 @@ namespace OutlookEthereumAddIn
                 // Unlock account
                 // Need to expose the personal API:
                 // start geth --datadir Ethereum-Private --networkid 42 --nodiscover --rpc --rpcapi eth,web3,personal --rpccorsdomain "*" console
-                web3.Personal.UnlockAccount.SendRequestAsync(account, password, new HexBigInteger(120)).Wait();
+                try
+                {
+                    web3.Personal.UnlockAccount.SendRequestAsync(account, password, new HexBigInteger(120)).Wait();
+                }
+                catch (Exception ex)
+                {
+                    // Ignore errors
+                    //MessageBox.Show(ex.Message);
+                }
 
                 // Send transaction
                 var abi = @"[{ ""constant"":false,""inputs"":[{""name"":""hash"",""type"":""uint256""},{""name"":""path"",""type"":""string""},{""name"":""computer"",""type"":""string""}],""name"":""fossilizeDocument"",""outputs"":[],""type"":""function""},{""constant"":true,""inputs"":[{""name"":"""",""type"":""uint256""}],""name"":""emails"",""outputs"":[{""name"":""sender"",""type"":""address""},{""name"":""subject"",""type"":""string""},{""name"":""emailFrom"",""type"":""string""},{""name"":""emailTo"",""type"":""string""}],""type"":""function""},{""constant"":false,""inputs"":[{""name"":""hash"",""type"":""uint256""},{""name"":""subject"",""type"":""string""},{""name"":""emailFrom"",""type"":""string""},{""name"":""emailTo"",""type"":""string""}],""name"":""fossilizeEmail"",""outputs"":[],""type"":""function""},{""constant"":true,""inputs"":[{""name"":"""",""type"":""uint256""}],""name"":""documents"",""outputs"":[{""name"":""sender"",""type"":""address""},{""name"":""path"",""type"":""string""},{""name"":""computer"",""type"":""string""}],""type"":""function""},{""anonymous"":false,""inputs"":[{""indexed"":false,""name"":""timestamp"",""type"":""uint256""},{""indexed"":true,""name"":""sender"",""type"":""address""},{""indexed"":false,""name"":""path"",""type"":""string""},{""indexed"":false,""name"":""computer"",""type"":""string""}],""name"":""DocumentFossilized"",""type"":""event""},{""anonymous"":false,""inputs"":[{""indexed"":false,""name"":""timestamp"",""type"":""uint256""},{""indexed"":true,""name"":""sender"",""type"":""address""},{""indexed"":false,""name"":""subject"",""type"":""string""},{""indexed"":false,""name"":""emailFrom"",""type"":""string""},{""indexed"":false,""name"":""emailTo"",""type"":""string""}],""name"":""EmailFossilized"",""type"":""event""}]";
